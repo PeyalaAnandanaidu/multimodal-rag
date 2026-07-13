@@ -52,7 +52,19 @@ cache_mgr    = CacheManager(
     similarity_threshold = 0.97,
     ttl_seconds          = 3600,
 )
-
+def get_allowed_origins() -> list:
+    """
+    Read allowed origins from env var.
+    Falls back to allowing all origins for initial deploy.
+    """
+    origins_env = os.getenv("ALLOWED_ORIGINS", "")
+    if origins_env:
+        origins = [o.strip() for o in origins_env.split(",") if o.strip()]
+        log.info(f"🌐 CORS allowed origins: {origins}")
+        return origins
+    # Default: allow all (update after getting frontend URL)
+    log.warning("⚠️  ALLOWED_ORIGINS not set — allowing all origins")
+    return ["*"]
 # ============================================================
 # App Lifespan
 # ============================================================
@@ -77,7 +89,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins     = ["*"],
+    allow_origins     = get_allowed_origins(),
     allow_credentials = True,
     allow_methods     = ["*"],
     allow_headers     = ["*"],
