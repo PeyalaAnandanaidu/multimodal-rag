@@ -1,5 +1,3 @@
-Markdown
-
 # 🧠 Multimodal PDF RAG System
 
 <div align="center">
@@ -119,9 +117,6 @@ Built with **OpenAI CLIP** for multimodal embeddings, **FAISS** for vector simil
 ▼
 FINAL ANSWER
 
-text
-
-
 ---
 
 ## 🛠️ Tech Stack
@@ -207,9 +202,6 @@ multimodal-rag/
 ├── docker-compose.yml
 └── .gitignore
 
-text
-
-
 ---
 
 ## 🚀 Getting Started
@@ -218,18 +210,16 @@ text
 Python 3.11+
 Node.js 20+
 Groq API Key (free at console.groq.com)
-text
-
-
 ### 1. Clone Repository
 
 ```bash
 git clone https://github.com/PeyalaAnandanaidu/multimodal-rag.git
 cd multimodal-rag
 2. Backend Setup
-Bash
-
+```bash
 cd backend
+```
+
 
 # Create virtual environment
 python -m venv .venv
@@ -245,36 +235,33 @@ pip install -r requirements.txt
 3. Environment Variables
 Create backend/.env:
 
-env
-
+```env
 GROQ_API_KEY=your_groq_api_key_here
 ALLOWED_ORIGINS=http://localhost:5173
 Get your free Groq API key at console.groq.com
 
 4. Run Backend
-Bash
-
+```bash
 cd backend
 uvicorn main:app --reload --port 8000
 Backend starts at: http://localhost:8000
 API Docs at: http://localhost:8000/docs
 
 5. Frontend Setup
-Bash
-
+```bash
 cd frontend
+```
+
 
 # Install dependencies
 npm install
 6. Frontend Environment
 Create frontend/.env:
 
-env
-
+```env
 VITE_API_URL=http://localhost:8000
 7. Run Frontend
-Bash
-
+```bash
 cd frontend
 npm run dev
 Frontend starts at: http://localhost:5173
@@ -299,7 +286,9 @@ System
 Method	Endpoint	Description
 GET	/health	Health check + system stats
 Example Request
-Bash
+```bash
+```
+
 
 # Upload PDF
 curl -X POST http://localhost:8000/api/pdfs/upload \
@@ -310,8 +299,7 @@ curl -X POST http://localhost:8000/api/pdfs/{pdf_id}/query \
   -H "Content-Type: application/json" \
   -d '{"query": "What is this document about?"}'
 Example Response
-JSON
-
+```json
 {
   "pdf_id": "abc-123",
   "query": "What is this document about?",
@@ -336,8 +324,6 @@ Off-Topic	Non-document queries	Block
 PII Detection	Email, phone, SSN, etc.	Warn
 Query Enrichment	Noun phrases → questions	Auto-fix
 Query Enrichment Examples
-text
-
 "his projects"    →  "List all the projects mentioned in the document..."
 "skills"          →  "What are the technical skills and technologies..."
 "email"           →  "What is the email address mentioned in the document?"
@@ -354,8 +340,6 @@ Toxic Content	Harmful output	Block
 Rate Limiting
 Sliding window rate limiter:
 
-text
-
 Global:    60 requests/minute per IP
            300 requests/hour per IP
 Per-PDF:   20 requests/minute per PDF
@@ -365,14 +349,10 @@ Uploads:   5 uploads/minute per IP
 Two-level cache system for fast repeated queries:
 
 Level 1: Exact Match
-text
-
 Query  →  SHA-256 hash  →  instant lookup
 "What is this document about?"
     └→  hash: abc123...  →  cached answer ✅
 Level 2: Semantic Match
-text
-
 Query  →  CLIP embedding  →  cosine similarity  →  cached answer
 "What does this document cover?"
     └→  embedding [0.02, -0.05, ...]
@@ -385,8 +365,7 @@ ttl_seconds          = 3600    # 1 hour TTL
 exact_ttl            = 7200    # 2 hour exact match TTL
 max_entries          = 500     # LRU eviction limit
 Cache Response
-JSON
-
+```json
 {
   "from_cache": true,
   "cache_similarity": 0.9823,
@@ -394,8 +373,6 @@ JSON
 }
 🔍 How It Works
 PDF Processing Pipeline
-text
-
 1. Upload PDF
       ↓
 2. Extract text per page (PyMuPDF)
@@ -412,8 +389,6 @@ text
       ↓
 8. Persist to disk (pickle)
 Query Processing Pipeline
-text
-
 1. Receive query
       ↓
 2. Rate limit check
@@ -439,8 +414,6 @@ text
       ↓
 12. Return response
 Multimodal Prompt Structure
-text
-
 [SYSTEM]
 You are a precise document analyst AI...
 
