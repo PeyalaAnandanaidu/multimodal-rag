@@ -2,27 +2,23 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
+ENV PYTHONUNBUFFERED=1
+ENV HF_HOME=/data/.cache
+ENV TRANSFORMERS_CACHE=/data/.cache
+
 RUN apt-get update && apt-get install -y \
+    build-essential \
+    libgl1 \
     libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download CLIP model
-RUN python -c "from transformers import CLIPModel, CLIPProcessor; \
-    CLIPModel.from_pretrained('openai/clip-vit-base-patch32'); \
-    CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')"
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 7860
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn","main:app","--host","0.0.0.0","--port","7860"]
